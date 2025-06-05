@@ -1,0 +1,7 @@
+nombre: documento.pdf;
+tipo: pdf;
+tamaño: 102400;
+creado: 2025-05-01 10:30;
+autor: IA Modelo;
+descripcion: Documento de prueba para la gramatica de metadatos;
+etiquetas: [documento, prueba, gramatica];
