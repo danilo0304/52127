@@ -1,0 +1,7 @@
+nombre: tarea 1;
+tipo: tarea;
+tamaño: !2340;
+creado: ayer;
+autor: yo;
+descripcion: tarea_uno;
+etiquetas: [*puntero];

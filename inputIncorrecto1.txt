@@ -1,0 +1,7 @@
+nombre: TP1.txt;
+tipo: $;
+tamaño: 7590
+creado: 2010-10-15-00;
+autor: abc123;
+descripcion: miTp;
+etiquetas: [Tp1];

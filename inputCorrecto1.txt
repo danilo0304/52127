@@ -1,0 +1,7 @@
+nombre: TrabajoPractico.txt;
+tipo: txt;
+tamaño: 550;
+creado: 2010-10-15 14:55;
+autor: Usuario;
+descripcion: Trabajo Practico de Sintaxis y Semantica;
+etiquetas: [Trabajo Practico];

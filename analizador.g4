@@ -1,11 +1,9 @@
 grammar analizador;
 
-metadata
-    : (campo)*
-    ;
+metadata: (campo)*;
 
 campo
-    : nombreCampo DOBLEPOINT SPACE valorCampo finCampo
+    : nombreCampo DOBLEPOINT divisor valorCampo finCampo
     ;
 
 nombreCampo
@@ -26,13 +24,21 @@ valorCampo
     | listaTexto
     ;
 
-texto: (LETRA)+ ( (SPACE | POINT)? (LETRA)+ )*;
+texto
+    : (LETRA)+ 
+    | (LETRA)+ divisor (texto)*
+    ;
+
+divisor
+    : SPACE
+    | POINT
+    ;
 
 num: (DIGITO)+;
 
-fecha: num GUION num GUION num ( SPACE num DOBLEPOINT num ( DOBLEPOINT num )? )?;
+fecha: num GUION num GUION num ( divisor num DOBLEPOINT num ( DOBLEPOINT num )? )?;
 
-listaTexto: LCOR texto ( COMMA SPACE texto )* RCOR;
+listaTexto: LCOR texto ( COMMA divisor texto )* RCOR;
 
 finCampo: SEMI;
 

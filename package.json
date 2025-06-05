@@ -1,7 +1,7 @@
 {
   "name": "52127",
   "version": "1.0.0",
-  "description": "```bash\r git clone https://github.com/Alpirrello/52081.git\r ```\r ## IMPORTANTE\r - Para ejecutar el proyecto, **debe correrse desde la terminal con `node .\\index.js`",
+  "description": "debe correrse desde la terminal con node .\\index.js",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -12,5 +12,6 @@
   "license": "ISC",
   "dependencies": {
     "antlr4": "^4.13.2"
-  }
+  },
+  "devDependencies": {}
 }

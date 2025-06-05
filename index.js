@@ -1,24 +1,21 @@
 import antlr4 from "antlr4";
 import analizadorLexer from "./generated/analizadorLexer.js";
 import analizadorParser from "./generated/analizadorParser.js";
-import fs from 'fs';
+import { CustomErrorListener } from "./CustomanalizadorListener.js";
+import fs from "fs";
 
-const input = fs.readFileSync('./input.txt', 'utf8');
+// Cargar entrada
+const input = fs.readFileSync("./input.txt", "utf8");
+
+// ------------------- Análisis Léxico ------------------- //
 const chars = new antlr4.InputStream(input);
-
-let huboErrorLexico = false;
-let huboErrorSintactico = false;
-
 const lexer = new analizadorLexer(chars);
 
+const lexErrorListener = new CustomErrorListener();
 lexer.removeErrorListeners();
-lexer.addErrorListener({
-  syntaxError(recognizer, offendingSymbol, line, column, msg) {
-    console.error(` Error léxico en línea ${line}, columna ${column}: ${msg}`);
-    huboErrorLexico = true;
-  }
-});
+lexer.addErrorListener(lexErrorListener);
 
+// Recolectar tokens
 const allTokens = [];
 let token = lexer.nextToken();
 while (token.type !== antlr4.Token.EOF) {
@@ -26,6 +23,7 @@ while (token.type !== antlr4.Token.EOF) {
   token = lexer.nextToken();
 }
 
+// Mostrar tokens
 const header = "| TOKEN             | LEXEMA             |";
 const separator = "-".repeat(header.length);
 console.log("\n" + separator);
@@ -40,29 +38,28 @@ allTokens.forEach(token => {
 });
 console.log(separator);
 
-if (huboErrorLexico) {
-  console.log("\n  El análisis se detuvo por errores léxicos. No se realizó el análisis sintáctico.");
+// Detener si hubo errores léxicos
+if (lexErrorListener.huboError) {
+  console.log("\n⚠️  El análisis se detuvo por errores léxicos. No se realizó el análisis sintáctico.");
+  process.exit(1);
+}
+
+// ------------------- Análisis Sintáctico ------------------- //
+const chars2 = new antlr4.InputStream(input);
+const lexer2 = new analizadorLexer(chars2);
+const tokens2 = new antlr4.CommonTokenStream(lexer2);
+const parser = new analizadorParser(tokens2);
+
+const parseErrorListener = new CustomErrorListener();
+parser.removeErrorListeners();
+parser.addErrorListener(parseErrorListener);
+
+parser.buildParseTrees = true;
+const tree = parser.metadata();
+
+if (parseErrorListener.huboError) {
+  console.log("\n❌ El análisis sintáctico terminó con errores.");
 } else {
-  const chars2 = new antlr4.InputStream(input);
-  const lexer2 = new analizadorLexer(chars2);
-  const tokens2 = new antlr4.CommonTokenStream(lexer2);
-  const parser2 = new analizadorParser(tokens2);
-
-  parser2.removeErrorListeners();
-  parser2.addErrorListener({
-    syntaxError(recognizer, offendingSymbol, line, column, msg) {
-      console.error(` Error sintáctico en línea ${line}, columna ${column}: ${msg}`);
-      huboErrorSintactico = true;
-    }
-  });
-
-  parser2.buildParseTrees = true;
-  const tree = parser2.metadata();
-
-  if (!huboErrorSintactico) {
-    console.log("\n Análisis sintáctico exitoso.\n");
-    console.log("Árbol de derivación:\n" + tree.toStringTree(parser2.ruleNames) + "\n\r");
-  } else {
-    console.log("\n El análisis se completó con errores sintácticos.");
-  }
+  console.log("\n✅ Análisis sintáctico exitoso.\n");
+  console.log("Árbol de derivación:\n" + tree.toStringTree(parser.ruleNames) + "\n\r");
 }
